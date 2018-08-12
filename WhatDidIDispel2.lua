@@ -98,8 +98,10 @@ end
 function WhatDidIDispel:OnEvent(event,...)
 	-- if we have a combat log event and its destination is ourselves
 	if (event == "COMBAT_LOG_EVENT_UNFILTERED" ) then
-		local timestamp, type, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, spellID, spellName, spellSchool, extraSpellID, extraSpellName, extraSchool, auraType = select(1, ...);
-		--        1        2      3            4           5            6            7           8         9           10         11        12         13          14           15             16            17         18
+		local eventData = {CombatLogGetCurrentEventInfo()}
+		local type = eventData[2]
+		local sourceFlags = eventData[6]
+		local extraSpellID = eventData[15]
 		-- we cut of the COMBATLOG_OBJECT_SPECIAL part of the sourceFlags
 		local checkFlags = bit.band(sourceFlags, 0xffff);
 		-- if we successfully dispel something from somebody
