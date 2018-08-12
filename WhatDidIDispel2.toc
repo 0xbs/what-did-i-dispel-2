@@ -3,6 +3,6 @@
 ## Author: Elotheon-Arthas-EU
 ## Notes: Tracks buffs/debuffs you dispel, and displays them upon request.
 ## Version: 8.0.0
-## SavedVariablesPerCharacter: dispelList, maxSize, clearOnLogin
+## SavedVariablesPerCharacter: WhatDidIDispelDB
 
 WhatDidIDispel2.lua

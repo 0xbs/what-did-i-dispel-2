@@ -38,20 +38,23 @@ function WhatDidIDispel:LinkHandler(...)
 end
 
 -- slash commands
-SLASH_WHATDIDIDISPEL1, SLASH_WHATDIDIDISPEL2, SLASH_WHATDIDIDISPEL3 = '/wdid', '/whatdididispel', '/dispel'
-function SlashCmdList.WHATDIDIDISPEL(msg, editbox)
+SLASH_WHATDIDIDISPEL1 = '/wdid'
+SLASH_WHATDIDIDISPEL2 = '/whatdididispel'
+SLASH_WHATDIDIDISPEL3 = '/dispel'
+function SlashCmdList.WHATDIDIDISPEL(msg)
+    local self = WhatDidIDispel
     msg = msg:lower()
     if msg == "help" then
-        WhatDidIDispel:DisplayHelp()
+        self:DisplayHelp()
     elseif msg == "reset" or msg == "clear" then
-        WhatDidIDispel:ResetDispels()
+        self:ResetDispels()
     elseif msg == "login" then
-        clearOnLogin = (clearOnLogin == false) and true or false
-        print("|cFFFFFF00Clear dispel list on login: "..tostring(clearOnLogin))
+        self.db.clearOnLogin = (self.db.clearOnLogin == false) and true or false
+        print("|cFFFFFF00Clear dispel list on login: "..tostring(self.db.clearOnLogin))
     elseif msg == "infinite" or (tonumber(msg) ~= nil and tonumber(msg) >= 0) then
-        WhatDidIDispel:ResizeList(tonumber(msg))
+        self:ResizeList(tonumber(msg))
     else
-        WhatDidIDispel:ListDispels()
+        self:ListDispels()
     end
 end
 
@@ -66,26 +69,26 @@ function WhatDidIDispel:DisplayHelp()
 end
 
 function WhatDidIDispel:ListDispels()
-    print("|cFFFFFF00Dispels ["..#dispelList.."]: (for options type /dispel help)")
-    for i, v in pairs(dispelList) do
+    print("|cFFFFFF00Dispels ["..#self.db.dispelList.."]: (for options type /dispel help)")
+    for k, v in pairs(self.db.dispelList) do
         print("  "..GetSpellLink(v).." ["..v.."]")
     end
     print(" ")
 end
 
 function WhatDidIDispel:ResetDispels()
-    --dispelList = {774,770,1126,2637,22812} -- test data
-    wipe(dispelList)
+    --self.db.dispelList = {774,770,1126,2637,22812} -- test data
+    wipe(self.db.dispelList)
     print("|cFFFFFF00Dispel list reset.")
 end
 
 function WhatDidIDispel:ResizeList(size)
-    maxSize = size
-    if maxSize == 0 then
+    self.db.maxSize = size
+    if self.db.maxSize == 0 then
         size = "infinite"
     else
-        for i = 1, #dispelList - maxSize do
-            tremove(dispelList, 1)
+        for i = 1, #self.db.dispelList - self.db.maxSize do
+            tremove(self.db.dispelList, 1)
         end
     end
     print("|cFFFFFF00Dispel list size set to "..size..".")
@@ -107,21 +110,26 @@ function WhatDidIDispel:OnEvent(event, ...)
             --DEFAULT_CHAT_FRAME:AddMessage("event="..event.."| timestamp="..timestamp.."| type="..type.."| sourceGUID="..sourceGUID.."| sourceName="..sourceName.."| sourceFlags="..sourceFlags.."| destGUID="..destGUID.."| destName="..destName.."| destFlags="..destFlags.."| spellID="..spellID.."| spellName="..spellName.."| spellSchool="..spellSchool.."| extraSpellID="..extraSpellID.."| extraSpellName="..extraSpellName)
             print(GetSpellLink(extraSpellID).." ["..extraSpellID.."]")
 
-            -- if our list is at max size, trim the oldest element.  maxSize of 0 denotes infinite size
-            if maxSize ~= 0 and #dispelList >= maxSize then
-                tremove(dispelList, 1)
+            -- if our list is at max size, trim the oldest element. maxSize of 0 denotes infinite size
+            if self.db.maxSize ~= 0 and #self.db.dispelList >= self.db.maxSize then
+                tremove(self.db.dispelList, 1)
             end
-            tinsert(dispelList, extraSpellID)
+            tinsert(self.db.dispelList, extraSpellID)
         end
     elseif event == "ADDON_LOADED" then
         if ... == "WhatDidIDispel2" then
             -- check for initial run
-            if dispelList == nil then
-                dispelList = {}
-                maxSize = 0
-                clearOnLogin = false
-                print( "Thanks for trying What Did I Dispel!  For options, type /dispel help")
-            elseif clearOnLogin == true then
+            if WhatDidIDispelDB == nil then
+                WhatDidIDispelDB = {
+                    dispelList = {},
+                    maxSize = 0,
+                    clearOnLogin = false,
+                }
+                print("Thanks for trying What Did I Dispel!  For options, type /dispel help")
+            end
+            self.db = WhatDidIDispelDB
+
+            if self.db.clearOnLogin == true then
                 WhatDidIDispel:ResetDispels()
             end
 
