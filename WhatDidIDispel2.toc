@@ -1,0 +1,10 @@
+## Interface: 70000
+## Title: What Did I Dispel 2
+## Author: elonoil
+## Notes: Tracks buffs/debuffs you dispel, and displays them upon request.
+## SavedVariablesPerCharacter: dispelList, maxSize, clearOnLogin
+## X-Curse-Packaged-Version: 7.0.3
+## X-Curse-Project-Name: What Did I Dispel 2
+## X-Curse-Project-ID: what-did-i-dispel-2
+## X-Curse-Repository-ID: wow/what-did-i-dispel-2/mainline
+WhatDidIDispel2.lua 
