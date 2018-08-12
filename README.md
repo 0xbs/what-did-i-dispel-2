@@ -21,7 +21,7 @@ This addon does not write anything in a chat channel, you are the only one who s
 Install addon and dispel something. You see a link to the debuff dispelled in the chat window. 
 Left click on the link to see a small window with a description of the buff/debuff. 
 Right click on the name of the buff to show a link to wowhead.com. 
-Type "/dispel help" and hit return to get a list of commands.
+Type `/dispel help` and hit return to get a list of commands.
 
 Supported commands
 
@@ -33,3 +33,8 @@ Supported commands
 * `/dispel help` - display help menu
 
 This AddOn is exactly the same as "What Did I Dispel", but compatible with WoW Patch 4.2. Original code by curttasker.
+
+### Resources
+
+* [Project on Curse](https://www.curseforge.com/wow/addons/what-did-i-dispel-2)
+* [Project on Curseforge](https://wow.curseforge.com/projects/what-did-i-dispel-2)
