@@ -71,7 +71,7 @@ end
 function WhatDidIDispel:ListDispels()
     print("|cFFFFFF00Dispels ["..#self.db.dispelList.."]: (for options type /dispel help)")
     for k, v in pairs(self.db.dispelList) do
-        print("  "..GetSpellLink(v).." ["..v.."]")
+        print("  "..C_Spell.GetSpellLink(v).." ["..v.."]")
     end
     print(" ")
 end
@@ -108,7 +108,7 @@ function WhatDidIDispel:OnEvent(event, ...)
             -- 0x0511 = player/player/friendly/self
             -- 0x1111 = pet/player/friendly/self
             --DEFAULT_CHAT_FRAME:AddMessage("event="..event.."| timestamp="..timestamp.."| type="..type.."| sourceGUID="..sourceGUID.."| sourceName="..sourceName.."| sourceFlags="..sourceFlags.."| destGUID="..destGUID.."| destName="..destName.."| destFlags="..destFlags.."| spellID="..spellID.."| spellName="..spellName.."| spellSchool="..spellSchool.."| extraSpellID="..extraSpellID.."| extraSpellName="..extraSpellName)
-            print(GetSpellLink(extraSpellID).." ["..extraSpellID.."]")
+            print(C_Spell.GetSpellLink(extraSpellID).." ["..extraSpellID.."]")
 
             -- if our list is at max size, trim the oldest element. maxSize of 0 denotes infinite size
             if self.db.maxSize ~= 0 and #self.db.dispelList >= self.db.maxSize then
