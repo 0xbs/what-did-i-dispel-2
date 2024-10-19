@@ -36,5 +36,4 @@ This AddOn is exactly the same as "What Did I Dispel", but compatible with WoW P
 
 ### Resources
 
-* [Project on Curse](https://www.curseforge.com/wow/addons/what-did-i-dispel-2)
-* [Project on Curseforge](https://wow.curseforge.com/projects/what-did-i-dispel-2)
+* [Project on CurseForge](https://www.curseforge.com/wow/addons/what-did-i-dispel-2)
