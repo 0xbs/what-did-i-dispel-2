@@ -1,4 +1,4 @@
-## Interface: 110002
+## Interface: 110005
 ## Title: What Did I Dispel 2
 ## Author: Bernhard Saumweber
 ## Notes: Tracks buffs/debuffs you dispel, and displays them upon request.
