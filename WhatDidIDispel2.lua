@@ -28,11 +28,10 @@ StaticPopupDialogs["SpellIDCopyDialog"] = {
     maxLetters = 1024, -- this otherwise gets cached from other dialogs which caps it at 10..20..30...
 }
 
-function WhatDidIDispel:LinkHandler(...)
-    local chatFrame, link, string, button = ...
-    local type,value = strsplit(":", chatFrame)
-    if string == "RightButton" and (type == "spell" or type == "item") then
-        linkURL = "http://www.wowhead.com/"..type.."="..value
+function WhatDidIDispel:LinkHandler(chatFrame, link, text, button)
+    local linkType, id = strsplit(":", link)
+    if button == "RightButton" and (linkType == "spell" or linkType == "item") and id then
+        linkURL = ("https://www.wowhead.com/%s=%s"):format(linkType, id)
         StaticPopup_Show("SpellIDCopyDialog")
     end
 end
@@ -94,17 +93,31 @@ function WhatDidIDispel:ResizeList(size)
     print("|cFFFFFF00Dispel list size set to "..size..".")
 end
 
+local function HookChatLinkClicks()
+    if type(ChatFrame_OnHyperlinkShow) == "function" then
+        -- Older behavior: chatframes call ChatFrame_OnHyperlinkShow(chatFrame, link, text, button)
+        hooksecurefunc("ChatFrame_OnHyperlinkShow", function(chatFrame, link, text, button)
+            WhatDidIDispel:LinkHandler(chatFrame, link, text, button)
+        end)
+    else
+        -- Newer behavior / restricted globals: hook SetItemRef(link, text, button[, chatFrame])
+        hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
+            WhatDidIDispel:LinkHandler(chatFrame, link, text, button)
+        end)
+    end
+end
+
 function WhatDidIDispel:OnEvent(event, ...)
     -- if we have a combat log event and its destination is ourselves
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local eventData = {CombatLogGetCurrentEventInfo()}
-        local type = eventData[2]
+        local eventType = eventData[2]
         local sourceFlags = eventData[6]
         local extraSpellID = eventData[15]
         -- we cut of the COMBATLOG_OBJECT_SPECIAL part of the sourceFlags
         local checkFlags = bit.band(sourceFlags, 0xffff)
         -- if we successfully dispel something from somebody
-        if (type == "SPELL_DISPEL" or type == "SPELL_STOLEN") and (checkFlags == 0x0511 or checkFlags == 0x1111) then
+        if (eventType == "SPELL_DISPEL" or eventType == "SPELL_STOLEN") and (checkFlags == 0x0511 or checkFlags == 0x1111) then
             -- 0x0511 = player/player/friendly/self
             -- 0x1111 = pet/player/friendly/self
             --DEFAULT_CHAT_FRAME:AddMessage("event="..event.."| timestamp="..timestamp.."| type="..type.."| sourceGUID="..sourceGUID.."| sourceName="..sourceName.."| sourceFlags="..sourceFlags.."| destGUID="..destGUID.."| destName="..destName.."| destFlags="..destFlags.."| spellID="..spellID.."| spellName="..spellName.."| spellSchool="..spellSchool.."| extraSpellID="..extraSpellID.."| extraSpellName="..extraSpellName)
@@ -134,7 +147,7 @@ function WhatDidIDispel:OnEvent(event, ...)
             end
 
             -- hook into hyperlink shows to bring up the popup for spell and item links
-            hooksecurefunc("ChatFrame_OnHyperlinkShow", WhatDidIDispel.LinkHandler)
+            HookChatLinkClicks()
         end
     end
 end
